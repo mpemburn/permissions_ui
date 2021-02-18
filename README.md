@@ -34,11 +34,18 @@ There are a number of ways to run this project on your local system this simples
 1. Go to your project's root (the `permissions_ui` directory) and run `php artisan serve`.  It should say:
 
     **Starting Laravel development server:** `http://127.0.0.1:8000`
-2. Browse to `http://127.0.0.1:8000`. You should see this README page.
+2. Browse to `http://127.0.0.1:8000`
 
 Another Laravel-friendly way to run the project with a few more sophisticated options is Larvel Valet.  You can get this here:
 
 https://laravel.com/docs/8.x/valet
+
+There are several other options as well.  You might try **Vagrant** (https://www.vagrantup.com) or **Docker** (https://www.docker.com).  Each has its advantages.
+
+### Using the Permissions UI
+Once you have the project up and running, you should be able to create a new user account by going to the **Register** link at the upper right corner of the screen (or add `/register` to the URL).  Enter your name, email, and password, and you'll be logged in automatically.
+
+On the **Dashboard**, you'll see the **Admin** menu.  It contains three items: **Roles**, **Permissions**, and **User Roles**. You can create each of these entities manually or, for a quick start, run:
 
 
 
