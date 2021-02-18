@@ -1,0 +1,47 @@
+div.permissions-table {
+    width: 80%;
+    margin: 2rem auto;
+    border: 1px solid lightgray
+}
+
+table {
+    width: 100%;
+    font-family: Arial, sans-serif;
+    border-collapse: collapse;
+}
+
+tr {
+    vertical-align: top;
+    border-top: 1px solid gray;
+}
+
+th {
+    padding: 10px;
+    text-align: left;
+    background-color: lightgray;
+}
+
+td {
+    padding: 10px;
+}
+
+td.report-line {
+    padding: 5px 5px 5px 30px;
+}
+
+td.has-device {
+    font-weight: bold;
+}
+
+td.found {
+    font-weight: bold;
+}
+
+td.to-upper {
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+div.controls {
+    margin: 10px;
+}
