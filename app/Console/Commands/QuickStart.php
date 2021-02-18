@@ -72,7 +72,7 @@ class QuickStart extends Command
             try {
                 $user->assignRole('Administrator');
             } catch (RoleDoesNotExist $e) {
-                ;
+
             }
         }
 

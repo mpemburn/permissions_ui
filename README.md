@@ -47,7 +47,13 @@ Once you have the project up and running, you should be able to create a new use
 
 On the **Dashboard**, you'll see the **Admin** menu.  It contains three items: **Roles**, **Permissions**, and **User Roles**. You can create each of these entities manually or, for a quick start, run:
 
+`php artisan quickstart --email=myemail@sample.com`
 
+...replacing the "myemail@sample.com" with the email address you used to create a login account.
+
+Now, if you go to **Admin**->**Roles** on the menu, you should see something like this:
+
+![](wiki/roles_screenshot.png)
 
 
 
