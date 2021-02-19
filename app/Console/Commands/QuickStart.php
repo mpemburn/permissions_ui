@@ -20,7 +20,8 @@ class QuickStart extends Command
     const SAMPLE_PERMISSIONS = [
         'Create Posts',
         'Edit Posts',
-        'Read Posts'
+        'Read Posts',
+        'Comment',
     ];
     /**
      * The name and signature of the console command.
@@ -74,6 +75,14 @@ class QuickStart extends Command
             } catch (RoleDoesNotExist $e) {
 
             }
+
+            collect(self::SAMPLE_PERMISSIONS)->each(static function (string $permissionName) use ($user) {
+                try {
+                    $user->givePermissionTo($permissionName);
+                } catch (PermissionAlreadyExists $e) {
+
+                }
+            });
         }
 
         $this->info("QuickStart passed for $email!");
