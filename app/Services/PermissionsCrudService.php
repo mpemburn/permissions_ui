@@ -5,12 +5,7 @@ namespace App\Services;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
-use Spatie\Permission\Exceptions\PermissionDoesNotExist;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
 class PermissionsCrudService
 {
@@ -38,11 +33,6 @@ class PermissionsCrudService
             } catch (\Exception $e) {
                 $this->validator->addError($e->getMessage());
                 Log::debug($e->getMessage());
-            }
-
-            if ($request->has('role_permission')) {
-                $role = Role::find($modelId);
-                $this->processPermissions($role, $request);
             }
         }
 
@@ -76,18 +66,16 @@ class PermissionsCrudService
                 $this->validator->addError($e->getMessage());
                 Log::debug($e->getMessage());
             }
-
-            if ($request->has('role_permission')) {
-                $role = Role::find($model->id);
-                $this->processPermissions($role, $request);
-            }
         }
 
         if ($this->validator->hasError()) {
             return response()->json(['error' => $this->validator->getMessage()], 400);
         }
 
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'id' => $model->id
+        ]);
     }
 
     public function delete(Request $request, Model $model): JsonResponse
@@ -103,59 +91,6 @@ class PermissionsCrudService
         }
 
         return response()->json(['success' => true]);
-    }
-
-    protected function processPermissions(Role $role, Request $request): void
-    {
-        $currentUserPermissions = $this->getCurrentRolePermissions($role);
-        $permissionsFromEditor = $this->getPermissionsFromEditorCheckboxes($request);
-
-        $this->addPermissions($role, $permissionsFromEditor, $currentUserPermissions);
-        if ($currentUserPermissions->isNotEmpty()) {
-            $this->removePermissions($role, $permissionsFromEditor, $currentUserPermissions);
-        }
-    }
-
-    protected function getCurrentRolePermissions(Role $role): Collection
-    {
-        return $role->getAllPermissions()->map(static function (Permission $item) {
-            return $item->name;
-        });
-    }
-
-    protected function getPermissionsFromEditorCheckboxes(Request $request): Collection
-    {
-        return collect($request->get('role_permission'));
-    }
-
-    protected function addPermissions(Role $role, $permissionsFromEditor, $currentUserPermissions): void
-    {
-        $toBeAdded = $permissionsFromEditor->diff($currentUserPermissions);
-        if ($toBeAdded->isNotEmpty()) {
-            $toBeAdded->values()->each(function (string $permission) use ($role) {
-                try {
-                    $role->givePermissionTo($permission);
-                } catch (PermissionDoesNotExist $e) {
-                    $this->validator->addError($e->getMessage());
-                    Log::debug($e->getMessage());
-                }
-            });
-        }
-    }
-
-    protected function removePermissions(Role $role, $permissionsFromEditor, $currentUserPermissions): void
-    {
-        $toBeRemoved = $currentUserPermissions->diff($permissionsFromEditor);
-        if ($toBeRemoved->isNotEmpty()) {
-            $toBeRemoved->values()->each(function (string $permission) use ($role) {
-                try {
-                    $role->revokePermissionTo($permission);
-                } catch (PermissionDoesNotExist $e) {
-                    $this->validator->addError($e->getMessage());
-                    Log::debug($e->getMessage());
-                }
-            });
-        }
     }
 
     protected function find(Request $request, Model $model): ?Model
