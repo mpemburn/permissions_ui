@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Interfaces\UiInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -16,7 +16,7 @@ class PermissionsCrudService
         $this->validator = $validationService;
     }
 
-    public function create(Request $request, Model $model): JsonResponse
+    public function create(Request $request, UiInterface $model): JsonResponse
     {
         $modelId = null;
         $name = null;
@@ -47,7 +47,7 @@ class PermissionsCrudService
         ]);
     }
 
-    public function update(Request $request, Model $model): JsonResponse
+    public function update(Request $request, UiInterface $model): JsonResponse
     {
         if ($this->validator->handle($request, [
             'name' => ['required', 'max:255']
@@ -78,7 +78,7 @@ class PermissionsCrudService
         ]);
     }
 
-    public function delete(Request $request, Model $model): JsonResponse
+    public function delete(Request $request, UiInterface $model): JsonResponse
     {
         $model = $this->find($request, $model);
         if (!$model) {
@@ -93,11 +93,15 @@ class PermissionsCrudService
         return response()->json(['success' => true]);
     }
 
-    protected function find(Request $request, Model $model): ?Model
+    protected function find(Request $request, UiInterface $model): ?UiInterface
     {
+        $class = get_class($model);
         $modelId = $request->get('id');
+        if (! $modelId) {
+            $this->validator->addError($class . ' not found by ID');
+            return null;
+        }
 
-        Log::debug($modelId);
         try {
             $model = $model->findById($modelId, 'web');
         } catch (\Exception $e) {

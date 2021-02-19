@@ -8,6 +8,7 @@ use App\Services\PermissionsCrudService;
 use App\Services\RolesService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class RolesController extends Controller
 {

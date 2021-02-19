@@ -25,6 +25,7 @@ class PermissionsAssociationService
         $permissionsFromEditor = $this->getPermissionsFromEditorCheckboxes($request);
 
         $this->addPermissions($role, $permissionsFromEditor, $currentUserPermissions);
+
         if ($currentUserPermissions->isNotEmpty()) {
             $this->removePermissions($role, $permissionsFromEditor, $currentUserPermissions);
         }
@@ -54,7 +55,9 @@ class PermissionsAssociationService
         if ($toBeAdded->isNotEmpty()) {
             $toBeAdded->values()->each(function (string $permission) use ($role) {
                 try {
-                    $role->givePermissionTo($permission);
+                    if ($permission !== 'false') {
+                        $role->givePermissionTo($permission);
+                    }
                 } catch (PermissionDoesNotExist $e) {
                     $this->validator->addError($e->getMessage());
                     Log::debug($e->getMessage());
@@ -69,7 +72,9 @@ class PermissionsAssociationService
         if ($toBeRemoved->isNotEmpty()) {
             $toBeRemoved->values()->each(function (string $permission) use ($role) {
                 try {
-                    $role->revokePermissionTo($permission);
+                    if ($permission !== 'false') {
+                        $role->revokePermissionTo($permission);
+                    }
                 } catch (PermissionDoesNotExist $e) {
                     $this->validator->addError($e->getMessage());
                     Log::debug($e->getMessage());

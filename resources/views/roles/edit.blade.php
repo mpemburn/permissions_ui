@@ -22,6 +22,8 @@
                                     @foreach($permissions as $permission)
                                         <li><input data-type="role_permission" type="checkbox" name="role_permission[]" value="{!! $permission->name !!}"> {!! $permission->name !!}</li>
                                     @endforeach
+                                    <!-- We need this bogus value in order to remove the last item when calling PermissionsAssociationService -->
+                                    <input type="hidden" name="role_permission[]" value="false">
                                 </ul>
                             </div>
                         </div>
