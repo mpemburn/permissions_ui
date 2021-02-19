@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\RoleUi;
 use App\Services\PermissionsAssociationService;
 use App\Services\PermissionsCrudService;
 use App\Services\RolesService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Spatie\Permission\Models\Role;
 
 class RolesController extends Controller
 {
@@ -29,7 +28,7 @@ class RolesController extends Controller
 
     public function create(Request $request): JsonResponse
     {
-        $response = $this->crudService->create($request, new Role());
+        $response = $this->crudService->create($request, new RoleUi());
 
         if ($request->has('role_permission')) {
             return $this->processPermissions($request, $response);
@@ -40,7 +39,7 @@ class RolesController extends Controller
 
     public function update(Request $request): JsonResponse
     {
-        $response = $this->crudService->update($request, new Role());
+        $response = $this->crudService->update($request, new RoleUi());
 
         if ($request->has('role_permission')) {
             return $this->processPermissions($request, $response);
@@ -51,7 +50,7 @@ class RolesController extends Controller
 
     public function delete(Request $request): JsonResponse
     {
-        return $this->crudService->delete($request, new Role());
+        return $this->crudService->delete($request, new RoleUi());
     }
 
     public function getPermissions(Request $request): JsonResponse
@@ -66,7 +65,7 @@ class RolesController extends Controller
         }
         // The ID of new or update Role is passed back in the response
         $roleId = $response->getData()->id;
-        $role = Role::find($roleId);
+        $role = RoleUi::find($roleId);
 
         return $this->permissionsAssociationService->process($role, $request);
     }
