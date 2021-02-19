@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Exceptions\PermissionAlreadyExists;
 use Spatie\Permission\Exceptions\RoleAlreadyExists;
 use Spatie\Permission\Exceptions\RoleDoesNotExist;
@@ -71,14 +72,17 @@ class QuickStart extends Command
 
         if ($this->createRolesAndPermissions()) {
             try {
-                $user->assignRole('Administrator');
+                $role = Role::findByName('Administrator', 'web');
+                $user->assignRole($role);
             } catch (RoleDoesNotExist $e) {
 
             }
 
-            collect(self::SAMPLE_PERMISSIONS)->each(static function (string $permissionName) use ($user) {
+            collect(self::SAMPLE_PERMISSIONS)->each(static function (string $permissionName) use ($role) {
                 try {
-                    $user->givePermissionTo($permissionName);
+                    if ($permissionName !== 'Comment') {
+                        $role->givePermissionTo($permissionName);
+                    }
                 } catch (PermissionAlreadyExists $e) {
 
                 }
