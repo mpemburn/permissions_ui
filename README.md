@@ -55,9 +55,14 @@ Now, if you go to **Admin**->**Roles** on the menu, you should see something lik
 
 ![](wiki/roles_screenshot.png)
 
+Going to the **Admin**->**Permissions** menu will show you this:
+
+![](wiki/permissions_screenshot.png)
+
+And finally  **Admin**->**User Roles** menu will look like this:
 
 
-
+![](wiki/user_roles_screenshot.png)
 
 
 
