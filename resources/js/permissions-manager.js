@@ -11,6 +11,7 @@ export default class PermissionsManager {
             return;
         }
         this.context = context;
+        this.ajax = null;
         this.csrf = $('[name="_token"]');
         this.bToken = $('[name="b_token"]');
         this.editForm = $('#' + context + '_edit_form');
@@ -37,6 +38,19 @@ export default class PermissionsManager {
             this.resetModal();
         }
 
+        if (options.ajax) {
+            this.ajax = options.ajax;
+            this.ajax.setCaller(this);
+            this.ajax.setErrorMessage(this.errorMessage);
+        }
+
+        if (options.dtManager) {
+            options.dtManager.run(context + '-table', {
+                pageLength: 25,
+                lengthMenu: [10, 25, 50, 75, 100],
+            });
+        }
+
         if (this.editForm.is('*')) {
             this.addEventListeners();
         }
@@ -58,66 +72,40 @@ export default class PermissionsManager {
         this.modal.toggleModal();
     }
 
-    callAjax(method, endpoint, data) {
-        let self = this;
+    ajaxRequest(method, endpoint, data) {
         let dataValue = data || this.editForm.serialize();
         this.currentOperation = endpoint;
-        $.ajax({
-            url: this.baseUrl + endpoint,
-            type: method,
-            datatype: 'json',
-            data: dataValue,
-            headers: {
-                'X-CSRF-TOKEN': this.csrf.val(),
-                'Authorization': 'Bearer ' + this.bToken.val()
-            },
-            success: function (response) {
-                if (self.currentOperation !== 'delete') {
-                    self.modal.toggleModal();
-                }
 
-                document.location.reload();
-            },
-            error: function (data) {
-                self.errorMessage.html(data.responseJSON.error)
-                    .removeClass('opacity-0')
-                    .fadeOut(5000, function () {
-                        $(this).addClass('opacity-0').show();
-                    });
-            }
-        });
+        this.ajax.setMethod(method)
+            .setEndpoint(this.baseUrl + endpoint)
+            .setData(dataValue)
+            .setSuccessCallback(this.responseSuccess)
+            .request();
+    }
+
+    responseSuccess(caller, response) {
+        if (caller.currentOperation !== 'delete') {
+            caller.modal.toggleModal();
+        }
+
+        document.location.reload();
     }
 
     retrievePermissionsForRole(roleName, endpoint) {
-        let self = this;
-        $.ajax({
-            url: this.baseUrl + endpoint,
-            type: 'GET',
-            datatype: 'json',
-            data: 'role_name=' + roleName,
-            headers: {
-                'X-CSRF-TOKEN': this.csrf.val(),
-                'Authorization': 'Bearer ' + this.bToken.val()
-            },
-            success: function (response) {
-                self.populateRolePermission(response);
-            },
-            error: function (data) {
-                self.errorMessage.html(data.responseJSON.error)
-                    .removeClass('opacity-0')
-                    .fadeOut(5000, function () {
-                        $(this).addClass('opacity-0').show();
-                    });
-            }
-        });
+        this.ajax.setMethod('GET')
+            .setEndpoint(this.baseUrl + endpoint)
+            .setData('role_name=' + roleName)
+            .setSuccessCallback(this.populateRolePermission)
+            .request();
     }
 
-    populateRolePermission(response) {
-        let self = this;
 
-        this.permissions = response.permissions;
+    populateRolePermission(caller, response) {
+        let self = caller;
 
-        this.editRolePermissions.each(function () {
+        caller.permissions = response.permissions;
+
+        caller.editRolePermissions.each(function () {
             let state = 'off';
             if ($.inArray($(this).val(), self.permissions) !== -1) {
                 $(this).prop('checked', true);
@@ -195,11 +183,11 @@ export default class PermissionsManager {
         })
 
         this.saveButton.on('click', function () {
-            self.callAjax('POST', 'create');
+            self.ajaxRequest('POST', 'create');
         });
 
         this.updateButton.on('click', function () {
-            self.callAjax('PUT', 'update');
+            self.ajaxRequest('PUT', 'update');
         });
 
         this.editButtons.on('click', function (evt) {
@@ -214,7 +202,7 @@ export default class PermissionsManager {
             let deleteId = $(this).attr('data-delete');
             let name = $(this).attr('data-name');
             if (confirm('Are you sure you want to delete "' + name + '"?')) {
-                self.callAjax('DELETE', 'delete', 'id=' + deleteId);
+                self.ajaxRequest('DELETE', 'delete', 'id=' + deleteId);
             }
 
         });

@@ -1,5 +1,6 @@
 export default class UserRolesManager {
     constructor(options) {
+        this.ajax = null;
         this.csrf = $('[name="_token"]');
         this.bToken = $('[name="b_token"]');
         this.editForm = $('#user_role_edit_form');
@@ -20,6 +21,19 @@ export default class UserRolesManager {
         if (options.modal) {
             this.modal = options.modal;
             this.resetModal();
+        }
+
+        if (options.ajax) {
+            this.ajax = options.ajax;
+            this.ajax.setCaller(this);
+            this.ajax.setErrorMessage(this.errorMessage);
+        }
+
+        if (options.dtManager) {
+            options.dtManager.run('user_roles_table', {
+                pageLength: 25,
+                lengthMenu: [10, 25, 50, 75, 100],
+            });
         }
 
         if (this.editForm.is('*')) {
@@ -87,32 +101,20 @@ export default class UserRolesManager {
 
     // Call back end to see if this role has associated permissions
     retrievePermissionsOwnedByRole(roleName, shouldShow) {
-        let self = this;
-
-        this.shouldShow = shouldShow;
-        $.ajax({
-            url: this.getAssignedEnpoint,
-            type: 'GET',
-            datatype: 'json',
-            data: 'role_name=' + roleName,
-            headers: {
-                'X-CSRF-TOKEN': this.csrf.val(),
-                'Authorization': 'Bearer ' + this.bToken.val()
-            },
-            success: function (response) {
-                self.togglePermissionsOwnedByRole(response, self.shouldShow);
-            },
-            error: function (data) {
-            }
-        });
+        this.ajax.setMethod('GET')
+            .setEndpoint(this.getAssignedEnpoint)
+            .setData('role_name=' + roleName)
+            .setExtraCallbackArg(shouldShow)
+            .setSuccessCallback(this.togglePermissionsOwnedByRole)
+            .request();
     }
 
-    togglePermissionsOwnedByRole(response, shouldShow) {
-        let self = this;
+    togglePermissionsOwnedByRole(caller, response, shouldShow) {
+        let self = caller;
 
-        this.shouldShow = shouldShow;
+        caller.shouldShow = shouldShow;
         if (response.permissions) {
-            this.assignedPermissions = response.permissions
+            caller.assignedPermissions = response.permissions
             $('input[data-type="permission"]').each(function () {
                 let checkbox = $(this);
                 let listItem = checkbox.parent();
@@ -125,6 +127,12 @@ export default class UserRolesManager {
                 }
             });
         }
+    }
+
+    saveResponseSuccess(caller, response) {
+        caller.modal.toggleModal();
+
+        document.location.reload();
     }
 
     addEventListeners() {
@@ -154,29 +162,11 @@ export default class UserRolesManager {
 
         this.saveButton.on('click', function () {
             let dataValue = self.editForm.serialize();
-
-            $.ajax({
-                url: self.apiAction,
-                type: 'POST',
-                datatype: 'json',
-                data: dataValue,
-                headers: {
-                    'X-CSRF-TOKEN': self.csrf.val(),
-                    'Authorization': 'Bearer ' + self.bToken.val()
-                },
-                success: function (response) {
-                    self.modal.toggleModal();
-
-                    document.location.reload();
-                },
-                error: function (data) {
-                    self.errorMessage.html(data.responseJSON.error)
-                        .removeClass('opacity-0')
-                        .fadeOut(5000, function () {
-                            $(this).addClass('opacity-0').show();
-                        });
-                }
-            });
+            self.ajax.setMethod('POST')
+                .setEndpoint(self.apiAction)
+                .setData(dataValue)
+                .setSuccessCallback(self.saveResponseSuccess)
+                .request();
         })
     }
 }

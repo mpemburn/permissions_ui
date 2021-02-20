@@ -22,3 +22,4 @@ yarn-error.log
 /.idea/commandlinetools/Laravel_2_18_21__10_22_AM.xml
 /.idea/codeStyles/codeStyleConfig.xml
 /resources/.DS_Store
+/public/js/app.js
