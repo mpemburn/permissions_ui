@@ -32,26 +32,9 @@ export default class PermissionsManager {
         this.nameCaution = $('#name_caution');
         this.permissionsWrapper = $('#permissions_for_role').find('ul');
 
-        // Modal is added in app.js
-        if (options.modal) {
-            this.modal = options.modal;
-            this.resetModal();
-        }
-
-        if (options.ajax) {
-            this.ajax = options.ajax;
-            this.ajax.setCaller(this);
-            this.ajax.setErrorMessage(this.errorMessage);
-        }
-
-        if (options.dtManager) {
-            options.dtManager.run(context + '-table', {
-                pageLength: 25,
-                lengthMenu: [10, 25, 50, 75, 100],
-            });
-        }
-
         if (this.editForm.is('*')) {
+            // Setup options passed in via app.js
+            this.setOptions(options);
             this.addEventListeners();
         }
     }
@@ -76,14 +59,15 @@ export default class PermissionsManager {
         let dataValue = data || this.editForm.serialize();
         this.currentOperation = endpoint;
 
-        this.ajax.setMethod(method)
-            .setEndpoint(this.baseUrl + endpoint)
-            .setData(dataValue)
-            .setSuccessCallback(this.responseSuccess)
+        this.ajax.withMethod(method)
+            .withEndpoint(this.baseUrl + endpoint)
+            .withData(dataValue)
+            .usingSuccessCallback(this.responseSuccess)
             .request();
     }
 
     responseSuccess(caller, response) {
+        // Caller was set in constructor via this.ajax.fromCaller(this);
         if (caller.currentOperation !== 'delete') {
             caller.modal.toggleModal();
         }
@@ -92,15 +76,16 @@ export default class PermissionsManager {
     }
 
     retrievePermissionsForRole(roleName, endpoint) {
-        this.ajax.setMethod('GET')
-            .setEndpoint(this.baseUrl + endpoint)
-            .setData('role_name=' + roleName)
-            .setSuccessCallback(this.populateRolePermission)
+        this.ajax.withMethod('GET')
+            .withEndpoint(this.baseUrl + endpoint)
+            .withData('role_name=' + roleName)
+            .usingSuccessCallback(this.populateRolePermission)
             .request();
     }
 
 
     populateRolePermission(caller, response) {
+        // Caller was set in constructor via this.ajax.fromCaller(this);
         let self = caller;
 
         caller.permissions = response.permissions;
@@ -124,15 +109,7 @@ export default class PermissionsManager {
             self.currentState[$(this).val()] = (this.checked) ? 'on' : 'off';
         });
 
-        let truth = [];
-        for (let key in this.rolePermissionSavedState) {
-            if (this.rolePermissionSavedState.hasOwnProperty(key)) {
-                let savedValue = this.rolePermissionSavedState[key];
-                truth.push(this.currentState[key] === savedValue);
-            }
-        }
-
-        return ($.inArray(false, truth) !== -1);
+        return this.comparator.compare(this.rolePermissionSavedState, this.currentState);
     }
 
     resetModal() {
@@ -146,8 +123,38 @@ export default class PermissionsManager {
         this.rolePermissionSavedState = {};
     }
 
+    setOptions(options) {
+        if (options.comparator) {
+            this.comparator = options.comparator;
+            this.resetModal();
+        }
+
+        if (options.modal) {
+            this.modal = options.modal;
+            this.resetModal();
+        }
+
+        if (options.ajax) {
+            this.ajax = options.ajax;
+            // Set "this" (i.e., PermissionsManager) to be the caller
+            this.ajax.fromCaller(this);
+            this.ajax.withErrorMessageField(this.errorMessage);
+        }
+
+        if (options.dtManager) {
+            options.dtManager.run(context + '-table', {
+                pageLength: 25,
+                lengthMenu: [10, 25, 50, 75, 100],
+            });
+        }
+    }
+
     addEventListeners() {
         let self = this;
+
+        $(document).on('modalClosed', function (evt) {
+            self.resetModal();
+        });
 
         $(document).on('modalClosed', function (evt) {
             self.resetModal();

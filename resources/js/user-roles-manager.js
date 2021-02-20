@@ -10,43 +10,39 @@ export default class UserRolesManager {
         this.selectedRoleName = null;
         this.selectedPermissionName = null;
         this.roleRows = null;
-        this.editorRoleCheckboxes = $('[data-type="role"]');
-        this.editorPermissionCheckboxes = $('[data-type="permission"]');
+        this.editorRoleCheckboxes = $('input[data-type="role"]');
+        this.editorPermissionCheckboxes = $('input[data-type="permission"]');
+        this.editorRoleSavedState = {};
+        this.editorPermissionSavedState = {};
+        this.editorRoleCheckboxesChanged = false;
+        this.editorPermissionCheckboxesChanged = false;
         this.saveButton = $('#save_user_roles');
         this.apiAction = $('#modal_form').attr('action');
         this.getAssignedEnpoint = $('[name="get_assigned_endpoint"]').val();
         this.permissionsAreAssignedMessage = $('#permissions_are_assigned');
         this.errorMessage = $('#user_roles_error');
 
-        if (options.modal) {
-            this.modal = options.modal;
-            this.resetModal();
-        }
-
-        if (options.ajax) {
-            this.ajax = options.ajax;
-            this.ajax.setCaller(this);
-            this.ajax.setErrorMessage(this.errorMessage);
-        }
-
-        if (options.dtManager) {
-            options.dtManager.run('user_roles_table', {
-                pageLength: 25,
-                lengthMenu: [10, 25, 50, 75, 100],
-            });
-        }
-
         if (this.editForm.is('*')) {
+            // Setup options passed in via app.js
+            this.setOptions(options);
             this.addEventListeners();
         }
     }
 
     resetModal() {
+        // Disable the Save button until something changes
+        this.saveButton.prop('disabled', 'disabled');
+
         // Uncheck all "Roles" checkboxes
         this.editorRoleCheckboxes.each(function () {
             $(this).prop('checked', false);
             $(this).prop('disabled', '');
         });
+
+        // Blank the "state" objects
+        this.editorRoleSavedState = {};
+        this.editorPermissionSavedState = {};
+
         // Uncheck all "Permissions" checkboxes
         this.editorPermissionCheckboxes.each(function () {
             let checkbox = $(this);
@@ -101,15 +97,16 @@ export default class UserRolesManager {
 
     // Call back end to see if this role has associated permissions
     retrievePermissionsOwnedByRole(roleName, shouldShow) {
-        this.ajax.setMethod('GET')
-            .setEndpoint(this.getAssignedEnpoint)
-            .setData('role_name=' + roleName)
-            .setExtraCallbackArg(shouldShow)
-            .setSuccessCallback(this.togglePermissionsOwnedByRole)
+        this.ajax.withMethod('GET')
+            .withEndpoint(this.getAssignedEnpoint)
+            .withData('role_name=' + roleName)
+            .addExtraArg(shouldShow)
+            .usingSuccessCallback(this.togglePermissionsOwnedByRole)
             .request();
     }
 
     togglePermissionsOwnedByRole(caller, response, shouldShow) {
+        // Caller was set in constructor via this.ajax.fromCaller(this);
         let self = caller;
 
         caller.shouldShow = shouldShow;
@@ -121,7 +118,7 @@ export default class UserRolesManager {
                 if ($.inArray(checkbox.val(), self.assignedPermissions) !== -1) {
                     // If this permission is already assigned
                     // hide the checkbox, gray it out, and show message
-                    checkbox.toggle(! self.shouldShow);
+                    checkbox.toggle(!self.shouldShow);
                     listItem.toggleClass('text-gray-400 pl-6', self.shouldShow);
                     self.permissionsAreAssignedMessage.toggle(self.shouldShow);
                 }
@@ -130,9 +127,54 @@ export default class UserRolesManager {
     }
 
     saveResponseSuccess(caller, response) {
+        // Caller was set in constructor via this.ajax.fromCaller(this);
         caller.modal.toggleModal();
 
         document.location.reload();
+    }
+
+    saveCheckboxStates(checkboxes, stateObject) {
+        let self = this;
+
+        this.stateObject = stateObject;
+        checkboxes.each(function () {
+            let state = $(this).prop('checked');
+            // Save the state to determine whether the user has changed it
+            self.stateObject[$(this).val()] = state;
+        });
+
+        return this.stateObject;
+    }
+
+    shouldEnableSave() {
+        let shouldEnable = ! (this.editorRoleCheckboxesChanged || this.editorPermissionCheckboxesChanged);
+        this.saveButton.prop('disabled', shouldEnable);
+    }
+
+    setOptions(options) {
+        if (options.comparator) {
+            this.comparator = options.comparator;
+            this.resetModal();
+        }
+
+        if (options.modal) {
+            this.modal = options.modal;
+            this.resetModal();
+        }
+
+        if (options.ajax) {
+            this.ajax = options.ajax;
+            // Set "this" (i.e., PermissionsManager) to be the caller
+            this.ajax.fromCaller(this);
+            this.ajax.withErrorMessageField(this.errorMessage);
+        }
+
+        if (options.dtManager) {
+            options.dtManager.run('user_roles_table', {
+                pageLength: 25,
+                lengthMenu: [10, 25, 50, 75, 100],
+            });
+        }
     }
 
     addEventListeners() {
@@ -153,19 +195,34 @@ export default class UserRolesManager {
             self.readRowEntities(row, 'role')
             self.readRowEntities(row, 'permission')
 
+            self.saveCheckboxStates(self.editorRoleCheckboxes, self.editorRoleSavedState);
+            self.saveCheckboxStates(self.editorPermissionCheckboxes, self.editorPermissionSavedState);
+
             self.modal.toggleModal();
         });
 
         this.editorRoleCheckboxes.on('click', function () {
             self.retrievePermissionsOwnedByRole($(this).val(), this.checked);
+
+            let currentState = self.saveCheckboxStates(self.editorRoleCheckboxes, {});
+            self.editorRoleCheckboxesChanged = self.comparator.compare(self.editorRoleSavedState, currentState);
+
+            self.shouldEnableSave()
+        });
+
+        this.editorPermissionCheckboxes.on('click', function () {
+            let currentState = self.saveCheckboxStates(self.editorPermissionCheckboxes, {});
+            self.editorPermissionCheckboxesChanged = self.comparator.compare(self.editorPermissionSavedState, currentState);
+
+            self.shouldEnableSave()
         });
 
         this.saveButton.on('click', function () {
             let dataValue = self.editForm.serialize();
-            self.ajax.setMethod('POST')
-                .setEndpoint(self.apiAction)
-                .setData(dataValue)
-                .setSuccessCallback(self.saveResponseSuccess)
+            self.ajax.withMethod('POST')
+                .withEndpoint(self.apiAction)
+                .withData(dataValue)
+                .usingSuccessCallback(self.saveResponseSuccess)
                 .request();
         })
     }

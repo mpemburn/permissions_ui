@@ -7,47 +7,47 @@ export default class RequestAjax {
         this.method = null;
         this.data = null;
         this.errorMessage = null;
-        this.extraArg = null;
+        this.extraArgs = [];
         this.successCallback = null;
         this.errorCallback = null;
     }
 
-    setCaller(caller) {
+    fromCaller(caller) {
         this.caller = caller;
     }
 
-    setMethod(method) {
+    withMethod(method) {
         this.method = method;
         return this;
     }
 
-    setEndpoint(endpoint) {
+    withEndpoint(endpoint) {
         this.endpoint = endpoint;
         return this;
     }
 
-    setData(data) {
+    withData(data) {
         this.data = data;
         return this;
     }
 
-    setSuccessCallback(callback) {
+    usingSuccessCallback(callback) {
         this.successCallback = callback;
         return this;
     }
 
-    setExtraCallbackArg(arg) {
-        this.extraArg = arg;
-        return this;
-    }
-
-    setErrorCallback(callback) {
+    usingErrorCallback(callback) {
         this.errorCallback = callback;
         return this;
     }
 
-    setErrorMessage(errorMessage) {
+    withErrorMessageField(errorMessage) {
         this.errorMessage = errorMessage;
+        return this;
+    }
+
+    addExtraArg(arg) {
+        this.extraArgs.push(arg);
         return this;
     }
 
@@ -64,7 +64,8 @@ export default class RequestAjax {
             },
             success: function (response) {
                 if (typeof self.successCallback === 'function') {
-                    self.successCallback(self.caller, response, self.extraArg);
+                    self.successCallback(self.caller, response, ...self.extraArgs);
+                    self.extraArgs = [];
                 }
             },
             error: function (response) {
@@ -78,6 +79,7 @@ export default class RequestAjax {
                             $(this).addClass('opacity-0').show();
                         });
                 }
+                self.extraArgs = [];
             }
         });
     }
