@@ -12,13 +12,11 @@ let modal = new Modal();
 
 new PermissionsManager({
     modal: modal,
-    dtManager: dtManager,
     ajax: ajax
 });
 
 new UserRolesManager({
     modal: modal,
-    dtManager: dtManager,
     ajax: ajax
 });
 
