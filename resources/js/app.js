@@ -3,7 +3,7 @@ import Modal from './modal';
 import PermissionsManager from './permissions-manager';
 import UserRolesManager from './user-roles-manager';
 
-let $ = require('jquery');
+window.$ = require('jquery');
 require('./bootstrap');
 require('alpinejs');
 
