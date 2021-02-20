@@ -22,6 +22,9 @@ It uses [Larvel Mix](https://laravel.com/docs/8.x/mix) to compile the Javascript
 - [**Installation Notes**](wiki/installation.md)
 - [**Getting Up and Running**](wiki/running.md)
 - [**Quick Start**](wiki/quick_start.md)
+- [**Creating and Editing Role**](wiki/roles_how_to.md)
+- [**Creating and Editing Permissions**](wiki/permissions_how_to.md)
+- [**Managing User Roles and Permission**](wiki/user_role_how_to.md)
 
 ### License
 
