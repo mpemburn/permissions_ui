@@ -42,7 +42,7 @@
             <!-- sticky footer -->
             <footer class="flex justify-end px-8 pb-8 pt-4">
                 <div id="user_roles_error" class="px-3 text-red-600 opacity-0">Error message</div>
-                <button id="save_user_roles" class="rounded px-3 py-1 bg-blue-700 hover:bg-blue-500 text-white focus:shadow-outline focus:outline-none">
+                <button id="save_user_roles" class="rounded px-3 py-1 bg-blue-700 hover:bg-blue-500 disabled:opacity-50 text-white focus:shadow-outline focus:outline-none">
                     Save
                 </button>
                 <button id="cancel" class="modal-close ml-3 rounded px-3 py-1 bg-gray-300 hover:bg-gray-200 focus:shadow-outline focus:outline-none">
