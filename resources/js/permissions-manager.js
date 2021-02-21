@@ -142,7 +142,7 @@ export default class PermissionsManager {
         }
 
         if (options.dtManager) {
-            options.dtManager.run(context + '-table', {
+            options.dtManager.run(this.context + '-table', {
                 pageLength: 25,
                 lengthMenu: [10, 25, 50, 75, 100],
             });

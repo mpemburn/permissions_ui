@@ -1,5 +1,5 @@
 <div class="" style="width: 90%;">
-    <main class="container mx-auto max-w-screen-lg h-full">
+    <main class="container mx-auto max-w-screen-sm h-full">
         <!-- permission edit modal -->
         <article id="editor" aria-label="Permission Edit Modal" class="relative h-full flex flex-col bg-white shadow-xl rounded-md" >
 
@@ -26,7 +26,7 @@
                 <button id="update_permission" class="rounded px-3 py-1 bg-blue-700 hover:bg-blue-500 disabled:opacity-50 text-white focus:shadow-outline focus:outline-none">
                     Update
                 </button>
-                <button id="save_permission" class="rounded px-3 py-1 bg-blue-700 hover:bg-blue-500 text-white focus:shadow-outline focus:outline-none">
+                <button id="save_permission" class="rounded px-3 py-1 bg-blue-700 hover:bg-blue-500 disabled:opacity-50 text-white focus:shadow-outline focus:outline-none">
                     Save
                 </button>
                 <button id="cancel" class="modal-close ml-3 rounded px-3 py-1 bg-gray-300 hover:bg-gray-200 focus:shadow-outline focus:outline-none">
