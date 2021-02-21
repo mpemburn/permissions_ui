@@ -39,6 +39,19 @@ export default class PermissionsManager {
         }
     }
 
+    resetModal() {
+        this.editNameField.val('');
+        this.saveButton.show();
+        this.updateButton.hide();
+        this.updateButton.prop('disabled', 'disabled');
+        this.editRolePermissions.each(function () {
+            $(this).prop('checked', false);
+        });
+        this.editEntityIdField.val('0');
+        this.rolePermissionSavedState = {};
+        this.nameCaution.hide();
+    }
+
     openForEdit(row) {
         let entityId = row.attr('id');
         let entityName = row.attr('data-name');
@@ -110,17 +123,6 @@ export default class PermissionsManager {
         });
 
         return this.comparator.compare(this.rolePermissionSavedState, this.currentState);
-    }
-
-    resetModal() {
-        this.editNameField.val('');
-        this.saveButton.show();
-        this.updateButton.hide();
-        this.updateButton.prop('disabled', 'disabled');
-        this.editRolePermissions.each(function () {
-            $(this).prop('checked', false);
-        });
-        this.rolePermissionSavedState = {};
     }
 
     setOptions(options) {

@@ -11,8 +11,8 @@
                             <div>Role Name:</div>
                             {{ Form::hidden('id', 0) }}
                             {{ Form::text('name', null, ['class' => 'form-control']) }}
-                            <div id="name_caution" class="text-red-600 font-normal hidden">
-                                CAUTION: Changing the <b>Role Name</b><br>may affect existing permissions.
+                            <div id="name_caution" class="w-2/3 text-red-600 font-normal hidden">
+                                CAUTION: Changing the <b>Role Name</b> may affect existing permissions.
                             </div>
                         </div>
                         <div class="form-group font-bold" id="permissions_for_role">
@@ -37,7 +37,7 @@
                 <button id="update_role" class="rounded px-3 py-1 bg-blue-700 hover:bg-blue-500 disabled:opacity-50 text-white focus:shadow-outline focus:outline-none">
                     Update
                 </button>
-                <button id="save_role" class="rounded px-3 py-1 bg-blue-700 hover:bg-blue-500 text-white focus:shadow-outline focus:outline-none">
+                <button id="save_role" class="rounded px-3 py-1 bg-blue-700 hover:bg-blue-500 disabled:opacity-50 text-white focus:shadow-outline focus:outline-none">
                     Save
                 </button>
                 <button id="cancel" class="modal-close ml-3 rounded px-3 py-1 bg-gray-300 hover:bg-gray-200 focus:shadow-outline focus:outline-none">
