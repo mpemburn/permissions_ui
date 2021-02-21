@@ -6,7 +6,7 @@
 ## User Interface for Spatie Laravel Permissions
 ![](wiki/user_roles_screenshot.png)
 
-The **Permissions UI** project shows an approach to creating a User Interface (UI) for the **Spatie Laravel Permissions** package.  You can find that marvelous package here:
+The **Permissions UI** project shows an approach to creating a User Interface (UI) for the **Spatie Laravel-permission** package.  You can find that marvelous package here:
 
 https://spatie.be/docs/laravel-permission/v3/introduction
 
