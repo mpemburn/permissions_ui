@@ -17,7 +17,7 @@ Going to the **Admin**->**Permissions** menu will show you this:
 
 ![](permissions_screenshot.png)
 
-And finally  **Admin**->**User Roles** menu will look like this:
+And finally **Admin**->**User Roles** menu will look like this:
 
 
 ![](user_roles_screenshot.png)
