@@ -1,7 +1,4 @@
-
-<p align="center">
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+[![MIT Licensed](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 
 ## User Interface for Spatie Laravel Permissions
 ![](wiki/user_roles_screenshot.png)
