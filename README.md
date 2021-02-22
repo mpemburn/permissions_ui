@@ -1,6 +1,6 @@
 [![MIT Licensed](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 
-## User Interface for Spatie Laravel-permissions
+## User Interface for Spatie Laravel-permission
 ![](wiki/user_roles_screenshot.png)
 
 The **Permissions UI** project shows an approach to creating a User Interface (UI) for the **Spatie Laravel-permission** package.  You can find that marvelous package here:
