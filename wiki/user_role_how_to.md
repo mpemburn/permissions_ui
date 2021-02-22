@@ -2,6 +2,7 @@
 
 Once you have roles and, potentially permissions, defined, you'll need to assign these to your users.  Navigate to the **Admin**->**User Roles** menu.  You will see a list of all of your users and any roles or permissions they've been granted.
 ![](user_roles_screenshot.png)
+
 When you click on the "Edit" button, you'll see this dialog box:
 
 ![](user_roles_dialog_screenshot.png)
