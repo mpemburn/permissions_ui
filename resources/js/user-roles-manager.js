@@ -18,7 +18,7 @@ export default class UserRolesManager {
         this.editorPermissionCheckboxesChanged = false;
         this.saveButton = $('#save_user_roles');
         this.apiAction = $('#modal_form').attr('action');
-        this.getAssignedEnpoint = $('[name="get_assigned_endpoint"]').val();
+        this.getAssignedEndpoint = $('[name="get_assigned_endpoint"]').val();
         this.permissionsAreAssignedMessage = $('#permissions_are_assigned');
         this.errorMessage = $('#user_roles_error');
 
@@ -98,7 +98,7 @@ export default class UserRolesManager {
     // Call back end to see if this role has associated permissions
     retrievePermissionsOwnedByRole(roleName, shouldShow) {
         this.ajax.withMethod('GET')
-            .withEndpoint(this.getAssignedEnpoint)
+            .withEndpoint(this.getAssignedEndpoint)
             .withData('role_name=' + roleName)
             .addExtraArg(shouldShow)
             .usingSuccessCallback(this.togglePermissionsOwnedByRole)

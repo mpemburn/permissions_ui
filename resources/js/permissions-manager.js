@@ -31,6 +31,8 @@ export default class PermissionsManager {
         this.errorMessage = $('#' + context + '_error');
         this.nameCaution = $('#name_caution');
         this.permissionsWrapper = $('#permissions_for_role').find('ul');
+        this.protected = $('input[name="protected_' + context + '"]');
+        this.nameProtected = $('#name_protected');
         this.confirmation = null;
 
         if (this.editForm.is('*')) {
@@ -41,7 +43,8 @@ export default class PermissionsManager {
     }
 
     resetModal() {
-        this.editNameField.val('');
+        this.editNameField.val('')
+            .prop('disabled', '');
         this.saveButton.show();
         this.updateButton.hide();
         this.updateButton.prop('disabled', 'disabled');
@@ -51,9 +54,11 @@ export default class PermissionsManager {
         this.editEntityIdField.val('0');
         this.rolePermissionSavedState = {};
         this.nameCaution.hide();
+        this.nameProtected.hide();
     }
 
     openForEdit(row) {
+        let self = this;
         let entityId = row.attr('id');
         let entityName = row.attr('data-name');
 
@@ -62,6 +67,15 @@ export default class PermissionsManager {
         this.currentNameValue = entityName;
         if (this.context === 'role') {
             this.retrievePermissionsForRole(entityName, 'permissions')
+        }
+        this.entityName = entityName;
+        if (this.protected.is('*')) {
+            this.protected.each(function () {
+                if (self.entityName === $(this).val()) {
+                    self.editNameField.prop('disabled', 'disabled');
+                    self.nameProtected.show();
+                }
+            })
         }
 
         this.saveButton.hide();

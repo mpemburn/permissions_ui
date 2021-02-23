@@ -19,7 +19,7 @@
                     <input type="hidden" name="user_id">
                     <input type="hidden" name="current_user_id" value="{!! Auth::user()->id !!}">
                     <input type="hidden" name="is_admin" value="{!! $currentUserIsAdmin !!}">
-                    <input type="hidden" name="get_assigned_endpoint" value="{!! $getAssignedEnpoint !!}">
+                    <input type="hidden" name="get_assigned_endpoint" value="{!! $getAssignedEndpoint !!}">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="form-group font-bold overflow-scroll">
                             Roles:

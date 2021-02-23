@@ -41,6 +41,10 @@ class PermissionsCrudService
             ->get();
     }
 
+    public function getProtectedRoles(): ?array
+    {
+        return explode(',', env('PROTECTED_ROLES'));
+    }
 
     public function create(Request $request, UiInterface $model): JsonResponse
     {

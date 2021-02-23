@@ -11,13 +11,19 @@
                     </svg>
                 </div>
                 <form id="role_edit_form" action="{!! $action !!}">
+                    @foreach($protectedRoles as $protected)
+                        <input type="hidden" name="protected_role" value="{!! $protected !!}">
+                    @endforeach
                     <div class="grid grid-cols-1 md:grid-cols-2">
                         <div class="form-group font-bold">
                             <div>Role Name:</div>
                             {{ Form::hidden('id', 0) }}
-                            {{ Form::text('name', null, ['class' => 'form-control']) }}
+                            {{ Form::text('name', null, ['class' => 'form-control, disabled:opacity-50']) }}
+                            <div id="name_protected" class="w-2/3 text-gray-600 font-normal hidden">
+                                <b>NOTICE:</b> This <b>Role Name</b> is flagged as protected and cannot be changed.
+                            </div>
                             <div id="name_caution" class="w-2/3 text-red-600 font-normal hidden">
-                                CAUTION: Changing the <b>Role Name</b> may affect existing permissions.
+                                <b>CAUTION:</b> Changing the <b>Role Name</b> may affect existing permissions.
                             </div>
                         </div>
                         <div class="form-group font-bold" id="permissions_for_role">

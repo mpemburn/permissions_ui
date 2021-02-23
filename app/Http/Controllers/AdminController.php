@@ -31,7 +31,9 @@ class AdminController extends Controller
         return view('roles.index')
             ->with('action', '/api/roles/')
             ->with('roles', $this->crudService->getAllRoles())
+            ->with('protectedRoles', $this->crudService->getProtectedRoles())
             ->with('permissions', $this->crudService->getAllPermissions())
+            ->with('disabled', '')
             ->with('token', $this->authService->getAuthToken());
     }
 
@@ -43,14 +45,13 @@ class AdminController extends Controller
             ->with('token', $this->authService->getAuthToken());
     }
 
-
     public function userRoles()
     {
         return view('user-roles.index')
             ->with('action', '/api/user_roles/')
             ->with('users', $this->crudService->getAllUsers())
             ->with('currentUserIsAdmin', $this->userRolesService->isCurrentUserAdmin())
-            ->with('getAssignedEnpoint', UserRolesService::GET_ASSIGNED_PERMISSIONS_ENDPOINT)
+            ->with('getAssignedEndpoint', UserRolesService::GET_ASSIGNED_PERMISSIONS_ENDPOINT)
             ->with('roles', $this->crudService->getAllRoles())
             ->with('permissions', $this->crudService->getAllPermissions())
             ->with('token', $this->authService->getAuthToken());

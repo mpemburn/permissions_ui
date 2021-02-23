@@ -17,7 +17,6 @@
                 Permissions
             </th>
             <th>
-
             </th>
             </thead>
             @foreach ($users as $user)
