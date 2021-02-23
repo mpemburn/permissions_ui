@@ -22,6 +22,7 @@ class QuickStart extends Command
         'Create Posts',
         'Edit Posts',
         'Read Posts',
+        'Delete Posts',
         'Comment',
     ];
     /**
