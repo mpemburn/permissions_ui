@@ -31,6 +31,7 @@ export default class PermissionsManager {
         this.errorMessage = $('#' + context + '_error');
         this.nameCaution = $('#name_caution');
         this.permissionsWrapper = $('#permissions_for_role').find('ul');
+        this.confirmation = null;
 
         if (this.editForm.is('*')) {
             // Setup options passed in via app.js
@@ -136,6 +137,10 @@ export default class PermissionsManager {
             this.resetModal();
         }
 
+        if (options.confirmation) {
+            this.confirmation = options.confirmation;
+        }
+
         if (options.ajax) {
             this.ajax = options.ajax;
             // Set "this" (i.e., PermissionsManager) to be the caller
@@ -160,6 +165,12 @@ export default class PermissionsManager {
 
         $(document).on('modalClosed', function (evt) {
             self.resetModal();
+        });
+
+        $(document).on('actionConfirmed', function (evt) {
+            let deleteId = evt.params.id || 0;
+
+            self.ajaxRequest('DELETE', 'delete', 'id=' + deleteId);
         });
 
         this.editNameField.on('keyup', function (evt) {
@@ -210,10 +221,10 @@ export default class PermissionsManager {
 
             let deleteId = $(this).attr('data-delete');
             let name = $(this).attr('data-name');
-            if (confirm('Are you sure you want to delete "' + name + '"?')) {
-                self.ajaxRequest('DELETE', 'delete', 'id=' + deleteId);
-            }
 
+            self.confirmation.ask('Are you sure you want to delete "' + name + '"?', {id: deleteId});
         });
+
+
     }
 }

@@ -1,10 +1,15 @@
-<div class="" style="width: 90%;">
+<div class="w-2/3">
     <main class="container mx-auto max-w-screen-lg h-full">
         <!-- role edit modal -->
         <article id="editor" aria-label="Role Edit Modal" class="relative h-full flex flex-col bg-white shadow-xl rounded-md" >
 
             <!-- scroll area -->
             <section class="h-full overflow-auto p-8 w-full h-full flex flex-col">
+                <div class="modal-close absolute top-0 right-0 cursor-pointer flex flex-col items-center mt-4 mr-4 text-white text-sm z-50">
+                    <svg class="fill-current text-black" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+                        <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
+                    </svg>
+                </div>
                 <form id="role_edit_form" action="{!! $action !!}">
                     <div class="grid grid-cols-1 md:grid-cols-2">
                         <div class="form-group font-bold">
