@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Services\AuthService;
+use App\Services\PermissionsCrudService;
 use App\Services\UserRolesService;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -12,47 +13,46 @@ class AdminController extends Controller
 {
     protected AuthService $authService;
     protected UserRolesService $userRolesService;
+    protected PermissionsCrudService $crudService;
 
-    public function __construct(AuthService $authService, UserRolesService $userRolesService)
+    public function __construct(
+        AuthService $authService,
+        UserRolesService $userRolesService,
+        PermissionsCrudService $crudService
+    )
     {
         $this->authService = $authService;
         $this->userRolesService = $userRolesService;
+        $this->crudService = $crudService;
     }
 
     public function roles()
     {
-        $roles = Role::all();
-        $permissions = Permission::all();
-
         return view('roles.index')
             ->with('action', '/api/roles/')
-            ->with('roles', $roles)
-            ->with('permissions', $permissions)
+            ->with('roles', $this->crudService->getAllRoles())
+            ->with('permissions', $this->crudService->getAllPermissions())
             ->with('token', $this->authService->getAuthToken());
     }
 
     public function permissions()
     {
-        $permissions = Permission::all();
-
         return view('permissions.index')
             ->with('action', '/api/permissions/')
-            ->with('permissions', $permissions)
+            ->with('permissions', $this->crudService->getAllPermissions())
             ->with('token', $this->authService->getAuthToken());
     }
 
 
     public function userRoles()
     {
-        $users = User::all();
-
         return view('user-roles.index')
             ->with('action', '/api/user_roles/')
-            ->with('users', $users)
+            ->with('users', $this->crudService->getAllUsers())
             ->with('currentUserIsAdmin', $this->userRolesService->isCurrentUserAdmin())
             ->with('getAssignedEnpoint', UserRolesService::GET_ASSIGNED_PERMISSIONS_ENDPOINT)
-            ->with('roles', Role::all())
-            ->with('permissions', Permission::all())
+            ->with('roles', $this->crudService->getAllRoles())
+            ->with('permissions', $this->crudService->getAllPermissions())
             ->with('token', $this->authService->getAuthToken());
     }
 }

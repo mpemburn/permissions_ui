@@ -3,9 +3,13 @@
 namespace App\Services;
 
 use App\Interfaces\UiInterface;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class PermissionsCrudService
 {
@@ -15,6 +19,28 @@ class PermissionsCrudService
     {
         $this->validator = $validationService;
     }
+
+    public function getAllRoles(): Collection
+    {
+        return Role::query()
+            ->orderBy('name')
+            ->get();
+    }
+
+    public function getAllPermissions(): Collection
+    {
+        return Permission::query()
+            ->orderBy('name')
+            ->get();
+    }
+
+    public function getAllUsers(): Collection
+    {
+        return User::query()
+            ->orderBy('name')
+            ->get();
+    }
+
 
     public function create(Request $request, UiInterface $model): JsonResponse
     {
