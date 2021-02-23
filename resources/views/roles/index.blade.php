@@ -4,13 +4,13 @@
             {{ __('Roles') }}
         </h2>
     </x-slot>
-    <div id="acl_wrapper" data-context="role" class="report">
+    <div id="acl_wrapper" data-context="role" class="roles-table">
         <div class="controls">
             <button id="edit_role" class="modal-open rounded px-3 py-1 bg-blue-700 hover:bg-blue-500 text-white focus:shadow-outline focus:outline-none">
                 Add Role
             </button>
         </div>
-        <table id="role-table" class="stripe">
+        <table id="role-table">
             <thead>
             <th>
                 Role Name
@@ -34,7 +34,7 @@
                             @endforeach
                         </ul>
                     </td>
-                    <td class="dt-right">
+                    <td class="text-right">
                         <button data-edit="{!! $role->id !!}" class="w-20 ml-3 rounded px-3 py-1 bg-green-300 hover:bg-green-700 hover:text-white focus:shadow-outline focus:outline-none">
                             Edit
                         </button>
@@ -57,7 +57,6 @@
         <div>
             @include('components.confirmation-dialog')
         </div>
-    </div>
     </div>
 
 </x-app-layout>
