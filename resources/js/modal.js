@@ -17,7 +17,7 @@ export default class Modal {
         this.modal.toggleClass('opacity-0');
         this.modal.toggleClass('fixed');
         this.modal.toggleClass('pointer-events-none');
-        this.body.toggleClass(context + '-active');
+        this.body.toggleClass(this.context + '-active');
 
         // Trigger open and close events for others to see
         if (this.body.hasClass(this.context + '-active')) {
