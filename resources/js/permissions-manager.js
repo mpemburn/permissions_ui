@@ -236,7 +236,7 @@ export default class PermissionsManager {
             let deleteId = $(this).attr('data-delete');
             let name = $(this).attr('data-name');
 
-            self.confirmation.ask('Are you sure you want to delete "' + name + '"?', {id: deleteId});
+            self.confirmation.ask('Are you sure you want to delete "<b>' + name + '</b>"?', {id: deleteId});
         });
 
 
