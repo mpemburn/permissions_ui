@@ -20,10 +20,10 @@ export default class Modal {
         this.body.toggleClass(context + '-active');
 
         // Trigger open and close events for others to see
-        if (this.body.hasClass(context + '-active')) {
-            $.event.trigger({ type: context + 'Opened'});
+        if (this.body.hasClass(this.context + '-active')) {
+            $.event.trigger({ type: this.context + 'Opened'});
         } else {
-            $.event.trigger({ type: context + 'Closed'});
+            $.event.trigger({ type: this.context + 'Closed'});
         }
     }
 
