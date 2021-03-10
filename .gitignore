@@ -24,3 +24,4 @@ yarn-error.log
 /resources/.DS_Store
 /public/js/app.js
 /public/css/app.css
+/.idea/vcs.xml
